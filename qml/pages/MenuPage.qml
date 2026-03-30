@@ -22,7 +22,7 @@ Page {
                 model: [
                     { name: qsTr("Новичок"), rows: 9, cols: 9, mines: 10 },
                     { name: qsTr("Средний"), rows: 16, cols: 16, mines: 40 },
-                    { name: qsTr("Эксперт"), rows: 16, cols: 30, mines: 99 }
+                    { name: qsTr("Эксперт"), rows: 30, cols: 16, mines: 99 }
                 ]
 
                 delegate: BackgroundItem {
@@ -45,17 +45,13 @@ Page {
                         Item {
                             width: 100
                             height: 100
-
-                            // Масштабируемая область
                             Item {
                                 id: previewContainer
                                 anchors.centerIn: parent
 
-                                // Реальный размер сетки
                                 width: modelData.cols * 10
                                 height: modelData.rows * 10
 
-                                // Масштаб под размер карточки
                                 scale: Math.min(100 / width, 100 / height)
 
                                 Grid {
@@ -106,6 +102,12 @@ Page {
                         }
                     )
                 }
+            }
+
+            Button {
+                width: parent.width
+                text: "Статистика"
+                onClicked: pageStack.push(Qt.resolvedUrl("StatsPage.qml"))
             }
         }
     }
