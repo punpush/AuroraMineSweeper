@@ -40,9 +40,7 @@ Item {
 
         Repeater {
             id: rep
-            model: (board.rows > 0 && board.cols > 0)
-                   ? board.rows * board.cols
-                   : 0
+            model: board.rows * board.cols
 
             delegate: Cell {
                 index: model.index
@@ -57,6 +55,9 @@ Item {
     }
 
     function reset() {
+        if (rows === 0 || cols === 0)
+            return
+
         grid = Logic.createGrid(rows, cols, mines)
         flags = 0
         flagChanged(flags)
@@ -70,27 +71,29 @@ Item {
 
     function restoreGrid() {
         for (var i = 0; i < rep.count; i++) {
-            var item = rep.itemAt(i);
-            if (!item) continue;
+            var item = rep.itemAt(i)
+            if (!item)
+                continue
 
-            var cell = grid[i];
+            var cell = grid[i]
 
             if (cell.opened)
-                item.reveal(cell);
+                item.reveal(cell)
             else if (cell.flag)
-                item.setFlag(true);
+                item.setFlag(true)
             else
-                item.reset();
+                item.reset()
         }
     }
 
-    Component.onCompleted: reset()
-
     function handleOpen(i) {
-        if (!grid || !grid[i]) return
-        if (grid[i].flag) return
+        if (!grid || !grid[i])
+            return
 
-        if (!grid.generated) {
+        if (grid[i].flag)
+            return
+
+        if (!grid.generated && !grid[i].opened) {
             Logic.placeMines(grid, rows, cols, mines, i)
             grid.generated = true
             firstClick()
@@ -115,8 +118,11 @@ Item {
     }
 
     function handleFlag(i) {
-        if (!grid || !grid[i]) return
-        if (grid[i].opened) return
+        if (!grid || !grid[i])
+            return
+
+        if (grid[i].opened)
+            return
 
         grid[i].flag = !grid[i].flag
         flags += grid[i].flag ? 1 : -1
@@ -128,7 +134,9 @@ Item {
     }
 
     function revealAll() {
-        if (!grid) return
+        if (!grid)
+            return
+
         for (var i = 0; i < grid.length; i++) {
             var item = rep.itemAt(i)
             if (item)

@@ -8,7 +8,7 @@ Page {
 
         Column {
             PageHeader {
-                title: qsTr("Выбор сложности")
+                title: qsTr("Select difficulty")
             }
 
             id: column
@@ -20,9 +20,9 @@ Page {
 
             Repeater {
                 model: [
-                    { name: qsTr("Новичок"), rows: 9, cols: 9, mines: 10 },
-                    { name: qsTr("Средний"), rows: 16, cols: 16, mines: 40 },
-                    { name: qsTr("Эксперт"), rows: 30, cols: 16, mines: 99 }
+                    { name: qsTr("Beginner"), rows: 9, cols: 9, mines: 10 },
+                    { name: qsTr("Average"), rows: 16, cols: 16, mines: 40 },
+                    { name: qsTr("Expert"), rows: 30, cols: 16, mines: 99 }
                 ]
 
                 delegate: BackgroundItem {
@@ -85,7 +85,7 @@ Page {
                             }
 
                             Label {
-                                text: modelData.rows + "×" + modelData.cols + " · " + modelData.mines + qsTr(" мин")
+                                text: modelData.rows + "×" + modelData.cols + " · " + modelData.mines + qsTr(" mines")
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.secondaryColor
                             }
@@ -106,7 +106,7 @@ Page {
 
             Button {
                 width: parent.width
-                text: "Статистика"
+                text: qsTr("Statistics")
                 onClicked: pageStack.push(Qt.resolvedUrl("StatsPage.qml"))
             }
         }

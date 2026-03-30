@@ -6,12 +6,12 @@ Rectangle {
     width: parent.cellSize
     height: parent.cellSize
 
-    color: opened ? "#d0d0d0" : "#808080"
-
     property int index
     property bool opened: false
     property bool flagged: false
     property bool flagMode: false
+
+    color: opened ? "#d0d0d0" : "#808080"
 
     signal openRequested()
     signal flagRequested()
@@ -41,11 +41,42 @@ Rectangle {
 
     function reveal(data) {
         opened = true
-        color = "#e0e0e0"
-        if (data.mine) {
+        if (data.mine)
             label.text = "💣"
-        } else if (data.count > 0) {
+        else if (data.count > 0)
             label.text = data.count
+
+        switch (data.count) {
+        case 0:
+            color = "#e0e0e0"
+            break
+        case 1:
+            color = "#b6ffb6"
+            break
+        case 2:
+            color = "#fff7a8"
+            break
+        case 3:
+            color = "#ffcf8a"
+            break
+        case 4:
+            color = "#ff9e9e"
+            break
+        case 5:
+            color = "#ff7f7f"
+            break
+        case 6:
+            color = "#ff5c5c"
+            break
+        case 7:
+            color = "#ff3d3d"
+            break
+        case 8:
+            color = "#ff1f1f"
+            break
+        default:
+            color = "#ff6666"
+            break
         }
     }
 

@@ -16,6 +16,9 @@ Page {
     property bool gameOver: false
     property bool started: false
 
+    property bool boardCreated: false
+    property bool saveLoaded: false
+
     Timer {
         id: timer
         interval: 1000
@@ -29,33 +32,60 @@ Page {
         title: "⏱ " + seconds + "   🚩 " + flagsUsed + "/" + mines
     }
 
-    Board {
-        id: board
+    Loader {
+        id: boardLoader
         anchors.top: header.bottom
         anchors.bottom: modeRow.top
         anchors.left: parent.left
         anchors.right: parent.right
+    }
 
-        rows: game.rows
-        cols: game.cols
-        mines: game.mines
-        flagMode: game.flagMode
+    Connections {
+        target: boardLoader
+        onLoaded: {
+            if (!boardCreated || saveLoaded)
+                return
 
-        onFirstClick: {
-            game.started = true
-            timer.start()
+            var b = boardLoader.item
+            b.flagMode = Qt.binding(function() { return game.flagMode })
+
+            var saved = Stats.loadGame()
+
+            if (saved &&
+                saved.rows === rows &&
+                saved.cols === cols &&
+                saved.mines === mines &&
+                !saved.gameOver) {
+
+                b.grid = saved.grid
+                b.grid.generated = saved.generated
+                b.restoreGrid()
+
+                seconds = saved.seconds
+                flagsUsed = saved.flagsUsed
+                flagMode = saved.flagMode
+                started = saved.started
+                gameOver = saved.gameOver
+
+                if (started && !gameOver)
+                    timer.start()
+
+            } else {
+                restart()
+            }
+
+            saveLoaded = true
         }
+    }
 
-        onFlagChanged: game.flagsUsed = flags
-        onGameLost: {
-            game.gameOver = true
-            timer.stop()
-            Stats.addLoss(difficulty)
-        }
-        onGameWon: {
-            game.gameOver = true
-            timer.stop()
-            Stats.addWin(difficulty, seconds)
+    function tryCreateBoard() {
+        if (rows > 0 && cols > 0 && mines > 0 && !boardCreated) {
+            boardLoader.setSource("Board.qml", {
+                rows: rows,
+                cols: cols,
+                mines: mines
+            })
+            boardCreated = true
         }
     }
 
@@ -67,13 +97,13 @@ Page {
 
         Button {
             width: Theme.itemSizeLarge
-            text: game.flagMode ? "Флаг" : "Откр."
+            text: game.flagMode ? qsTr("Flag") : qsTr("Open")
             onClicked: game.flagMode = !game.flagMode
         }
 
         Button {
             width: Theme.itemSizeLarge
-            text: "Меню"
+            text: qsTr("Menu")
             onClicked: pageStack.pop()
         }
 
@@ -84,40 +114,58 @@ Page {
         }
     }
 
+    Connections {
+        target: boardLoader.item
+        ignoreUnknownSignals: true
+
+        onGameLost: {
+            game.gameOver = true
+            timer.stop()
+            Stats.addLoss(difficulty)
+            Stats.clearSave()
+        }
+
+        onGameWon: {
+            game.gameOver = true
+            timer.stop()
+            Stats.addWin(difficulty, seconds)
+            Stats.clearSave()
+        }
+
+        onFlagChanged: game.flagsUsed = flags
+        onFirstClick: {
+            game.started = true
+            timer.start()
+        }
+    }
+
     function restart() {
         seconds = 0
         flagsUsed = 0
         gameOver = false
         started = false
-        board.reset()
+
+        if (boardLoader.item)
+            boardLoader.item.reset()
     }
 
-    Component.onCompleted: {
-        var saved = Stats.loadGame();
-        if (saved && saved.rows === rows && saved.cols === cols && saved.mines === mines) {
-            seconds = saved.seconds;
-            flagsUsed = saved.flagsUsed;
-            flagMode = saved.flagMode;
-            started = saved.started;
-            gameOver = saved.gameOver;
-
-            board.grid = saved.grid;
-            board.restoreGrid();
-        }
-    }
+    onRowsChanged: tryCreateBoard()
+    onColsChanged: tryCreateBoard()
+    onMinesChanged: tryCreateBoard()
 
     onStatusChanged: {
-        if (status === PageStatus.Deactivating) {
+        if (status === PageStatus.Deactivating && boardLoader.item) {
             Stats.saveGame({
-                rows: game.rows,
-                cols: game.cols,
-                mines: game.mines,
-                seconds: game.seconds,
-                flagsUsed: game.flagsUsed,
-                flagMode: game.flagMode,
-                started: game.started,
-                gameOver: game.gameOver,
-                grid: board.grid
+                rows: rows,
+                cols: cols,
+                mines: mines,
+                seconds: seconds,
+                flagsUsed: flagsUsed,
+                flagMode: flagMode,
+                started: started,
+                gameOver: gameOver,
+                generated: boardLoader.item.grid.generated,
+                grid: boardLoader.item.grid
             })
         }
     }
