@@ -12,17 +12,17 @@
 <context>
     <name>GamePage</name>
     <message>
-        <location filename="../qml/pages/GamePage.qml" line="100"/>
+        <location filename="../qml/pages/GamePage.qml" line="101"/>
         <source>Flag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/GamePage.qml" line="100"/>
+        <location filename="../qml/pages/GamePage.qml" line="101"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/GamePage.qml" line="106"/>
+        <location filename="../qml/pages/GamePage.qml" line="107"/>
         <source>Menu</source>
         <translation type="unfinished"></translation>
     </message>
@@ -65,6 +65,36 @@
     <message>
         <location filename="../qml/pages/StatsPage.qml" line="20"/>
         <source>Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StatsPage.qml" line="25"/>
+        <source>Beginner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StatsPage.qml" line="26"/>
+        <source>Average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StatsPage.qml" line="27"/>
+        <source>Expert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StatsPage.qml" line="54"/>
+        <source>Wins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StatsPage.qml" line="60"/>
+        <source>Loses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StatsPage.qml" line="66"/>
+        <source>Best time</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
