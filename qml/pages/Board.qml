@@ -1,13 +1,15 @@
 import QtQuick 2.6
 import Sailfish.Silica 1.0
-import "../logic.js" as Logic
+import "../../js/logic.js" as Logic
 
 Item {
     id: board
-    property int rows
-    property int cols
-    property int mines
-    property bool flagMode
+    anchors.fill: parent
+
+    property int rows: 1
+    property int cols: 1
+    property int mines: 0
+    property bool flagMode: false
 
     signal firstClick()
     signal flagChanged(int flags)
@@ -17,16 +19,37 @@ Item {
     property var grid
     property int flags: 0
 
+    property real cellSize: (rows > 0 && cols > 0)
+                            ? Math.floor(
+                                  Math.min(
+                                      (width - Theme.paddingLarge * 2) / cols,
+                                      (height - Theme.paddingLarge * 2) / rows
+                                  )
+                              )
+                            : 0
+
     Grid {
         id: gridView
         rows: board.rows
         columns: board.cols
         spacing: 2
+        anchors.centerIn: parent
+
+        width: board.cols * board.cellSize + (board.cols - 1) * spacing
+        height: board.rows * board.cellSize + (board.rows - 1) * spacing
 
         Repeater {
-            model: rows * cols
+            id: rep
+            model: (board.rows > 0 && board.cols > 0)
+                   ? board.rows * board.cols
+                   : 0
+
             delegate: Cell {
                 index: model.index
+                width: board.cellSize
+                height: board.cellSize
+                flagMode: board.flagMode
+
                 onOpenRequested: board.handleOpen(index)
                 onFlagRequested: board.handleFlag(index)
             }
@@ -37,13 +60,34 @@ Item {
         grid = Logic.createGrid(rows, cols, mines)
         flags = 0
         flagChanged(flags)
-        for (let i = 0; i < gridView.count; i++)
-            gridView.itemAt(i).reset()
+
+        for (var i = 0; i < rep.count; i++) {
+            var item = rep.itemAt(i)
+            if (item)
+                item.reset()
+        }
+    }
+
+    function restoreGrid() {
+        for (var i = 0; i < rep.count; i++) {
+            var item = rep.itemAt(i);
+            if (!item) continue;
+
+            var cell = grid[i];
+
+            if (cell.opened)
+                item.reveal(cell);
+            else if (cell.flag)
+                item.setFlag(true);
+            else
+                item.reset();
+        }
     }
 
     Component.onCompleted: reset()
 
     function handleOpen(i) {
+        if (!grid || !grid[i]) return
         if (grid[i].flag) return
 
         if (!grid.generated) {
@@ -59,7 +103,9 @@ Item {
         }
 
         Logic.openCell(grid, rows, cols, i, function(idx) {
-            gridView.itemAt(idx).reveal(grid[idx])
+            var item = rep.itemAt(idx)
+            if (item)
+                item.reveal(grid[idx])
         })
 
         if (Logic.checkWin(grid)) {
@@ -69,16 +115,24 @@ Item {
     }
 
     function handleFlag(i) {
+        if (!grid || !grid[i]) return
         if (grid[i].opened) return
 
         grid[i].flag = !grid[i].flag
         flags += grid[i].flag ? 1 : -1
         flagChanged(flags)
-        gridView.itemAt(i).setFlag(grid[i].flag)
+
+        var item = rep.itemAt(i)
+        if (item)
+            item.setFlag(grid[i].flag)
     }
 
     function revealAll() {
-        for (let i = 0; i < grid.length; i++)
-            gridView.itemAt(i).reveal(grid[i])
+        if (!grid) return
+        for (var i = 0; i < grid.length; i++) {
+            var item = rep.itemAt(i)
+            if (item)
+                item.reveal(grid[i])
+        }
     }
 }

@@ -3,13 +3,15 @@ import Sailfish.Silica 1.0
 
 Rectangle {
     id: cell
-    width: 48
-    height: 48
+    width: parent.cellSize
+    height: parent.cellSize
+
     color: opened ? "#d0d0d0" : "#808080"
 
     property int index
     property bool opened: false
     property bool flagged: false
+    property bool flagMode: false
 
     signal openRequested()
     signal flagRequested()
@@ -17,13 +19,13 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            if (flagMode)
+            if (cell.flagMode)
                 flagRequested()
             else
                 openRequested()
         }
         onPressAndHold: {
-            if (flagMode)
+            if (cell.flagMode)
                 openRequested()
             else
                 flagRequested()
