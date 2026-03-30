@@ -21,7 +21,11 @@ Page {
             }
 
             Repeater {
-                model: ["Beginner", "Average", "Expert"]
+                model: ListModel {
+                    ListElement{name: qsTr("Beginner"); value: 0}
+                    ListElement{name: qsTr("Average"); value: 1}
+                    ListElement{name: qsTr("Expert"); value: 2}
+                }
 
                 delegate: BackgroundItem {
                     width: parent.width - Theme.horizontalPageMargin * 2
@@ -41,25 +45,25 @@ Page {
                         spacing: Theme.paddingSmall
 
                         Label {
-                            text: qsTr(modelData)
+                            text: name
                             font.pixelSize: Theme.fontSizeLarge
                             color: Theme.primaryColor
                         }
 
                         Label {
-                            text: qsTr("Wins: " + Stats.get(modelData).wins)
+                            text: qsTr("Wins") + ": " + ((Stats.get(value) || {}).wins || 0)
                             font.pixelSize: Theme.fontSizeMedium
                             color: Theme.secondaryColor
                         }
 
                         Label {
-                            text: qsTr("Loses: " + Stats.get(modelData).losses)
+                            text: qsTr("Loses") + ": " + ((Stats.get(value) || {}).losses || 0)
                             font.pixelSize: Theme.fontSizeMedium
                             color: Theme.secondaryColor
                         }
 
                         Label {
-                            text: qsTr("Best time: " + (Stats.get(modelData).best || "-"))
+                            text: qsTr("Best time") + ": " + ((Stats.get(value) || {}).best || "-")
                             font.pixelSize: Theme.fontSizeMedium
                             color: Theme.secondaryColor
                         }

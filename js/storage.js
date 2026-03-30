@@ -13,10 +13,10 @@ function init() {
     var db = getDB()
     db.transaction(function(tx) {
         tx.executeSql(
-            'CREATE TABLE IF NOT EXISTS stats (difficulty TEXT UNIQUE, wins INTEGER, losses INTEGER, best INTEGER)'
+            'CREATE TABLE IF NOT EXISTS stats (difficulty INTEGER UNIQUE, wins INTEGER, losses INTEGER, best INTEGER)'
         )
 
-        var diffs = ["Beginner", "Average", "Expert"]
+        var diffs = [0, 1, 2]
         for (var i = 0; i < diffs.length; i++) {
             tx.executeSql(
                 'INSERT OR IGNORE INTO stats VALUES (?, 0, 0, NULL)',
@@ -78,6 +78,7 @@ function initSave() {
             "seconds INTEGER, flagsUsed INTEGER, " +
             "flagMode INTEGER, started INTEGER, gameOver INTEGER, " +
             "generated INTEGER, " +
+            "difficulty INTEGER, " +
             "grid TEXT)"
         )
     })
@@ -88,7 +89,7 @@ function saveGame(state) {
     db.transaction(function(tx) {
         tx.executeSql("DELETE FROM savegame")
         tx.executeSql(
-            "INSERT INTO savegame VALUES (1,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO savegame VALUES (1,?,?,?,?,?,?,?,?,?,?,?)",
             [
                 state.rows,
                 state.cols,
@@ -99,6 +100,7 @@ function saveGame(state) {
                 state.started ? 1 : 0,
                 state.gameOver ? 1 : 0,
                 state.generated ? 1 : 0,
+                state.difficulty,
                 JSON.stringify(state.grid)
             ]
         )
@@ -123,6 +125,8 @@ function loadGame() {
                 started: !!r.started,
                 gameOver: !!r.gameOver,
                 generated: !!r.generated,
+                difficulty: r.difficulty,
+                difficulty: r.difficulty,
                 grid: JSON.parse(r.grid)
             }
         }

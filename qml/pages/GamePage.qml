@@ -8,7 +8,7 @@ Page {
     property int rows
     property int cols
     property int mines
-    property string difficulty
+    property int difficulty
 
     property int flagsUsed: 0
     property int seconds: 0
@@ -66,6 +66,7 @@ Page {
                 flagMode = saved.flagMode
                 started = saved.started
                 gameOver = saved.gameOver
+                difficulty = saved.difficulty
 
                 if (started && !gameOver)
                     timer.start()
@@ -165,7 +166,8 @@ Page {
                 started: started,
                 gameOver: gameOver,
                 generated: boardLoader.item.grid.generated,
-                grid: boardLoader.item.grid
+                grid: boardLoader.item.grid,
+                difficulty: difficulty
             })
         }
     }

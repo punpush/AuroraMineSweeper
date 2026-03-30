@@ -19,11 +19,11 @@ Page {
             anchors.topMargin: Theme.paddingLarge
 
             Repeater {
-                model: [
-                    { name: qsTr("Beginner"), rows: 9, cols: 9, mines: 10 },
-                    { name: qsTr("Average"), rows: 16, cols: 16, mines: 40 },
-                    { name: qsTr("Expert"), rows: 30, cols: 16, mines: 99 }
-                ]
+                model: ListModel {
+                    ListElement{ name: qsTr("Beginner"); value: 0; rows: 9; cols: 9; mines: 10 }
+                    ListElement{ name: qsTr("Average"); value: 1; rows: 16; cols: 16; mines: 40 }
+                    ListElement{ name: qsTr("Expert"); value: 2; rows: 30; cols: 16; mines: 99 }
+                }
 
                 delegate: BackgroundItem {
                     width: parent.width * 0.9
@@ -49,19 +49,19 @@ Page {
                                 id: previewContainer
                                 anchors.centerIn: parent
 
-                                width: modelData.cols * 10
-                                height: modelData.rows * 10
+                                width: cols * 10
+                                height: rows * 10
 
                                 scale: Math.min(100 / width, 100 / height)
 
                                 Grid {
                                     anchors.fill: parent
-                                    rows: modelData.rows
-                                    columns: modelData.cols
+                                    rows: rows
+                                    columns: cols
                                     spacing: 1
 
                                     Repeater {
-                                        model: modelData.rows * modelData.cols
+                                        model: rows * cols
 
                                         Rectangle {
                                             width: 10
@@ -80,12 +80,12 @@ Page {
                             anchors.verticalCenter: parent.verticalCenter
 
                             Label {
-                                text: modelData.name
+                                text: name
                                 font.pixelSize: Theme.fontSizeLarge
                             }
 
                             Label {
-                                text: modelData.rows + "×" + modelData.cols + " · " + modelData.mines + qsTr(" mines")
+                                text: rows + "×" + cols + " · " + mines + qsTr(" mines")
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.secondaryColor
                             }
@@ -95,10 +95,10 @@ Page {
                     onClicked: pageStack.push(
                         Qt.resolvedUrl("GamePage.qml"),
                         {
-                            rows: modelData.rows,
-                            cols: modelData.cols,
-                            mines: modelData.mines,
-                            difficulty: modelData.name
+                            rows: rows,
+                            cols: cols,
+                            mines: mines,
+                            difficulty: value
                         }
                     )
                 }
