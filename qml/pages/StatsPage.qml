@@ -17,11 +17,11 @@ Page {
             anchors.topMargin: Theme.paddingLarge
 
             PageHeader {
-                title: qsTr("Статистика")
+                title: qsTr("Statistics")
             }
 
             Repeater {
-                model: ["Новичок", "Средний", "Эксперт"]
+                model: ["Beginner", "Average", "Expert"]
 
                 delegate: BackgroundItem {
                     width: parent.width - Theme.horizontalPageMargin * 2
@@ -41,25 +41,25 @@ Page {
                         spacing: Theme.paddingSmall
 
                         Label {
-                            text: modelData
+                            text: qsTr(modelData)
                             font.pixelSize: Theme.fontSizeLarge
                             color: Theme.primaryColor
                         }
 
                         Label {
-                            text: "Побед: " + Stats.get(modelData).wins
+                            text: qsTr("Wins: " + Stats.get(modelData).wins)
                             font.pixelSize: Theme.fontSizeMedium
                             color: Theme.secondaryColor
                         }
 
                         Label {
-                            text: "Поражений: " + Stats.get(modelData).losses
+                            text: qsTr("Loses: " + Stats.get(modelData).losses)
                             font.pixelSize: Theme.fontSizeMedium
                             color: Theme.secondaryColor
                         }
 
                         Label {
-                            text: "Лучшее время: " + (Stats.get(modelData).best || "-")
+                            text: qsTr("Best time: " + (Stats.get(modelData).best || "-"))
                             font.pixelSize: Theme.fontSizeMedium
                             color: Theme.secondaryColor
                         }
