@@ -1,7 +1,6 @@
 import QtQuick 2.6
 import Sailfish.Silica 1.0
-import "../logic.js" as Logic
-import "../stats.js" as Stats
+import "../../js/storage.js" as Stats
 
 Page {
     id: game
@@ -25,67 +24,63 @@ Page {
         onTriggered: seconds++
     }
 
-    SilicaFlickable {
-        anchors.fill: parent
+    PageHeader {
+        id: header
+        title: "⏱ " + seconds + "   🚩 " + flagsUsed + "/" + mines
+    }
 
-        Column {
-            width: parent.width
+    Board {
+        id: board
+        anchors.top: header.bottom
+        anchors.bottom: modeRow.top
+        anchors.left: parent.left
+        anchors.right: parent.right
 
-            // HEADER
-            Row {
-                width: parent.width
-                spacing: Theme.paddingLarge
-                anchors.horizontalCenter: parent.horizontalCenter
+        rows: game.rows
+        cols: game.cols
+        mines: game.mines
+        flagMode: game.flagMode
 
-                Label { text: "⏱ " + seconds }
-                Label { text: "🚩 " + flagsUsed + "/" + mines }
+        onFirstClick: {
+            game.started = true
+            timer.start()
+        }
 
-                Button {
-                    text: "Меню"
-                    onClicked: pageStack.pop()
-                }
-                Button {
-                    text: "↻"
-                    onClicked: game.restart()
-                }
-            }
+        onFlagChanged: game.flagsUsed = flags
+        onGameLost: {
+            game.gameOver = true
+            timer.stop()
+            Stats.addLoss(difficulty)
+        }
+        onGameWon: {
+            game.gameOver = true
+            timer.stop()
+            Stats.addWin(difficulty, seconds)
+        }
+    }
 
-            // BOARD
-            Board {
-                id: board
-                rows: game.rows
-                cols: game.cols
-                mines: game.mines
-                flagMode: game.flagMode
+    Row {
+        id: modeRow
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: Theme.paddingLarge
 
-                onFirstClick: {
-                    game.started = true
-                    timer.start()
-                }
+        Button {
+            width: Theme.itemSizeLarge
+            text: game.flagMode ? "Флаг" : "Откр."
+            onClicked: game.flagMode = !game.flagMode
+        }
 
-                onFlagChanged: game.flagsUsed = flags
-                onGameLost: {
-                    game.gameOver = true
-                    timer.stop()
-                    Stats.addLoss(difficulty)
-                }
-                onGameWon: {
-                    game.gameOver = true
-                    timer.stop()
-                    Stats.addWin(difficulty, seconds)
-                }
-            }
+        Button {
+            width: Theme.itemSizeLarge
+            text: "Меню"
+            onClicked: pageStack.pop()
+        }
 
-            // CLICK MODE SWITCH
-            Row {
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: Theme.paddingLarge
-
-                Button {
-                    text: game.flagMode ? "Режим: Флажок" : "Режим: Открытие"
-                    onClicked: game.flagMode = !game.flagMode
-                }
-            }
+        Button {
+            width: Theme.itemSizeLarge
+            text: "↻"
+            onClicked: game.restart()
         }
     }
 
@@ -95,5 +90,35 @@ Page {
         gameOver = false
         started = false
         board.reset()
+    }
+
+    Component.onCompleted: {
+        var saved = Stats.loadGame();
+        if (saved && saved.rows === rows && saved.cols === cols && saved.mines === mines) {
+            seconds = saved.seconds;
+            flagsUsed = saved.flagsUsed;
+            flagMode = saved.flagMode;
+            started = saved.started;
+            gameOver = saved.gameOver;
+
+            board.grid = saved.grid;
+            board.restoreGrid();
+        }
+    }
+
+    onStatusChanged: {
+        if (status === PageStatus.Deactivating) {
+            Stats.saveGame({
+                rows: game.rows,
+                cols: game.cols,
+                mines: game.mines,
+                seconds: game.seconds,
+                flagsUsed: game.flagsUsed,
+                flagMode: game.flagMode,
+                started: game.started,
+                gameOver: game.gameOver,
+                grid: board.grid
+            })
+        }
     }
 }
