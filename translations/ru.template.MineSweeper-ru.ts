@@ -32,8 +32,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/MenuPage.qml" line="92"/>
+        <location filename="../qml/pages/MenuPage.qml" line="88"/>
         <source> мин</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StatsPage</name>
+    <message>
+        <location filename="../qml/pages/StatsPage.qml" line="20"/>
+        <source>Статистика</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
