@@ -10,30 +10,53 @@
     </message>
 </context>
 <context>
+    <name>GamePage</name>
+    <message>
+        <location filename="../qml/pages/GamePage.qml" line="100"/>
+        <source>Flag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/GamePage.qml" line="100"/>
+        <source>Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/GamePage.qml" line="106"/>
+        <source>Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MenuPage</name>
     <message>
         <location filename="../qml/pages/MenuPage.qml" line="11"/>
-        <source>Выбор сложности</source>
+        <source>Select difficulty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/MenuPage.qml" line="23"/>
-        <source>Новичок</source>
+        <source>Beginner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/MenuPage.qml" line="24"/>
-        <source>Средний</source>
+        <source>Average</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/MenuPage.qml" line="25"/>
-        <source>Эксперт</source>
+        <source>Expert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/MenuPage.qml" line="88"/>
-        <source> мин</source>
+        <source> mines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/MenuPage.qml" line="109"/>
+        <source>Statistics</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -41,7 +64,7 @@
     <name>StatsPage</name>
     <message>
         <location filename="../qml/pages/StatsPage.qml" line="20"/>
-        <source>Статистика</source>
+        <source>Statistics</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
